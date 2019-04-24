@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'common',
     'profiles',
 ]
 
@@ -98,3 +99,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+# Date formats
+DEFAULT_DATE_FORMAT = '%Y-%m-%d'
+DEFAULT_TIME_FORMAT = '%H:%M:%S'
+DEFAULT_DATE_TIME_FORMAT = DEFAULT_DATE_FORMAT + ' ' + DEFAULT_TIME_FORMAT
+
+# DRF settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'common.paginators.NormalizedLimitOffsetPagination',
+
+    'EXCEPTION_HANDLER': 'common.exceptions.base_exception_handler',
+
+    'DEFAULT_RENDERER_CLASSES': (
+        'common.renderers.NormalizedJSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ),
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'authentication.authenticators.JwtTokenAuthentication'
+    ]
+}

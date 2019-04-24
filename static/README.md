@@ -1,0 +1,1 @@
+Project static files will reside here
