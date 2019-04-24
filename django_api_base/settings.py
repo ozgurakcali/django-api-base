@@ -9,7 +9,40 @@ DEBUG = True
 AUTH_USER_MODEL = 'profiles.User'
 
 
-ALLOWED_HOSTS = []
+# Security
+CSRF_TRUSTED_ORIGINS = [
+    '127.0.0.1:4200',
+    'localhost:4200',
+    '127.0.0.1:8080',
+    'localhost:8080',
+]
+
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1:4200',
+    'localhost:4200',
+    '127.0.0.1:8080',
+    'localhost:8080',
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'user-agent',
+    'accept-encoding',
+    'x-authtoken'
+)
+
+CORS_EXPOSE_HEADERS = [
+    'x-authtoken'
+]
+
+ALLOWED_HOSTS = [
+    '*'
+]
 
 
 INSTALLED_APPS = [
@@ -19,6 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'corsheaders',
     'common',
     'profiles',
     'authentication',
@@ -26,6 +61,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
