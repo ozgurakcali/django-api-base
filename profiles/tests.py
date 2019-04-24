@@ -140,7 +140,6 @@ class UserTests(BaseTests):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['body']['first_name'], initial_first_name)
         self.assertEqual(response.json()['body']['last_name'], initial_last_name)
-        self.assertEqual(response.json()['body']['settings']['expected_daily_calories'], None)
 
         user_id = response.json()['body']['id']
 
@@ -150,7 +149,6 @@ class UserTests(BaseTests):
         # Now try to update this user's data with self token
         updated_first_name = self.faker.name()
         updated_last_name = self.faker.name()
-        daily_calories = 100
         response = self.client.put(
             '/users/' + str(user_id) + '/',
             content_type='application/json',
@@ -161,15 +159,11 @@ class UserTests(BaseTests):
                 'last_name': updated_last_name,
                 'email': self.faker.email(),
                 'username': username,
-                'settings': {
-                    'expected_daily_calories': daily_calories
-                }
             }
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['body']['first_name'], updated_first_name)
         self.assertEqual(response.json()['body']['last_name'], updated_last_name)
-        self.assertEqual(response.json()['body']['settings']['expected_daily_calories'], daily_calories)
 
         # Now try to create update this user's data with administrator token
         updated_first_name = self.faker.name()
@@ -184,9 +178,6 @@ class UserTests(BaseTests):
                 'last_name': updated_last_name,
                 'email': self.faker.email(),
                 'username': username,
-                'settings': {
-                    'expected_daily_calories': daily_calories
-                }
             }
         )
         self.assertEqual(response.status_code, 200)
@@ -223,9 +214,6 @@ class UserTests(BaseTests):
                 'last_name': initial_last_name,
                 'email': self.faker.email(),
                 'username': username,
-                'settings': {
-                    'expected_daily_calories': 100
-                }
             }
         )
         self.assertEqual(response.status_code, 403)
@@ -241,9 +229,6 @@ class UserTests(BaseTests):
                 'last_name': initial_last_name,
                 'email': self.faker.email(),
                 'username': username,
-                'settings': {
-                    'expected_daily_calories': 100
-                }
             }
         )
         self.assertEqual(response.status_code, 403)

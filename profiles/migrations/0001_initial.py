@@ -7,6 +7,15 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 
+from profiles.constants import RoleTypes
+
+
+def forward_function(apps, schema_editor):
+    # Create Roles
+    _Role = apps.get_model('profiles', 'Role')
+    _Role.objects.create(type=RoleTypes.END_USER)
+    _Role.objects.create(type=RoleTypes.ADMINISTRATOR)
+
 
 class Migration(migrations.Migration):
 
@@ -62,4 +71,5 @@ class Migration(migrations.Migration):
             name='userrole',
             unique_together={('user', 'role')},
         ),
+        migrations.RunPython(forward_function),
     ]

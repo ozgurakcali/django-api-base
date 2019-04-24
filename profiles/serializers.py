@@ -37,7 +37,6 @@ class UserSerializer(serializers.ModelSerializer):
                   'username',
                   'password',
                   'password_confirm',
-                  'settings',
                   'roles')
 
     def validate(self, data):
