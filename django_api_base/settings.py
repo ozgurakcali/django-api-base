@@ -6,6 +6,9 @@ SECRET_KEY = 'o*(zh4b8*9hzi#9=4(ep##0s9!#e$%@ee5ghj3qwrdb73v^f_='
 
 DEBUG = True
 
+AUTH_USER_MODEL = 'profiles.User'
+
+
 ALLOWED_HOSTS = []
 
 
@@ -16,6 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'profiles',
 ]
 
 MIDDLEWARE = [
