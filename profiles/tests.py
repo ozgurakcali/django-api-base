@@ -1,3 +1,5 @@
+import json
+
 from django.test import Client
 from faker import Factory
 
@@ -72,7 +74,7 @@ class UserTests(BaseTests):
         })
         self.assertEqual(response.status_code, 400)
         self.assertIn(Messages.USER__PASSWORD_MISSING,
-                      [message['key'] for message in response.json()['messages']])
+                      [message['key'] for message in json.loads(response['Messages'])])
 
     def test_create_with_non_matching_passwords(self):
         """
@@ -90,7 +92,7 @@ class UserTests(BaseTests):
         })
         self.assertEqual(response.status_code, 400)
         self.assertIn(Messages.USER__PASSWORDS_DO_NOT_MATCH,
-                      [message['key'] for message in response.json()['messages']])
+                      [message['key'] for message in json.loads(response['Messages'])])
 
     def test_create_with_existing_username(self):
         """
@@ -138,10 +140,10 @@ class UserTests(BaseTests):
             'password_confirm': password
         })
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['body']['first_name'], initial_first_name)
-        self.assertEqual(response.json()['body']['last_name'], initial_last_name)
+        self.assertEqual(response.json()['first_name'], initial_first_name)
+        self.assertEqual(response.json()['last_name'], initial_last_name)
 
-        user_id = response.json()['body']['id']
+        user_id = response.json()['id']
 
         # Now get token for this user
         token = self._get_token(username, password)
@@ -162,8 +164,8 @@ class UserTests(BaseTests):
             }
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['body']['first_name'], updated_first_name)
-        self.assertEqual(response.json()['body']['last_name'], updated_last_name)
+        self.assertEqual(response.json()['first_name'], updated_first_name)
+        self.assertEqual(response.json()['last_name'], updated_last_name)
 
         # Now try to create update this user's data with administrator token
         updated_first_name = self.faker.name()
@@ -181,8 +183,8 @@ class UserTests(BaseTests):
             }
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['body']['first_name'], updated_first_name)
-        self.assertEqual(response.json()['body']['last_name'], updated_last_name)
+        self.assertEqual(response.json()['first_name'], updated_first_name)
+        self.assertEqual(response.json()['last_name'], updated_last_name)
 
     def test_update_without_authorization(self):
         """
@@ -202,7 +204,7 @@ class UserTests(BaseTests):
             'password_confirm': password
         })
         self.assertEqual(response.status_code, 201)
-        user_id = response.json()['body']['id']
+        user_id = response.json()['id']
 
         # Now try to update this user without authentication
         response = self.client.put(
@@ -245,7 +247,7 @@ class UserTests(BaseTests):
         response = self.client.get('/users/',
                                    HTTP_AUTHORIZATION='Bearer ' + self.administrator_token)
         self.assertEqual(response.status_code, 200)
-        self.assertGreaterEqual(len(response.json()['body']), 1)
+        self.assertGreaterEqual(len(response.json()), 1)
 
     def test_list_without_authorization(self):
         """
@@ -279,13 +281,13 @@ class UserTests(BaseTests):
         response = self.client.get('/users/' + str(user_id) + '/',
                                    HTTP_AUTHORIZATION='Bearer ' + token)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['body']['username'], username)
+        self.assertEqual(response.json()['username'], username)
 
         # Now try to retrieve this user with an administrator
         response = self.client.get('/users/' + str(user_id) + '/',
                                    HTTP_AUTHORIZATION='Bearer ' + self.administrator_token)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['body']['username'], username)
+        self.assertEqual(response.json()['username'], username)
 
     def test_retrieve_without_authorization(self):
         """
@@ -409,7 +411,7 @@ class UserTests(BaseTests):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(Messages.USER__INVALID_PASSWORD,
-                      [message['key'] for message in response.json()['messages']])
+                      [message['key'] for message in json.loads(response['Messages'])])
 
         # Now try to update this user's password with a non-matching passwords
         updated_password = self.faker.password()
@@ -425,7 +427,7 @@ class UserTests(BaseTests):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(Messages.USER__PASSWORDS_DO_NOT_MATCH,
-                      [message['key'] for message in response.json()['messages']])
+                      [message['key'] for message in json.loads(response['Messages'])])
 
     def test_update_password_without_authorization(self):
         """

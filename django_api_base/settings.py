@@ -154,14 +154,9 @@ DEFAULT_DATE_TIME_FORMAT = DEFAULT_DATE_FORMAT + ' ' + DEFAULT_TIME_FORMAT
 
 # DRF settings
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'common.paginators.NormalizedLimitOffsetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'common.paginators.HeaderLimitOffsetPagination',
 
     'EXCEPTION_HANDLER': 'common.exceptions.base_exception_handler',
-
-    'DEFAULT_RENDERER_CLASSES': (
-        'common.renderers.NormalizedJSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer'
-    ),
 
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'authentication.authenticators.JwtTokenAuthentication'

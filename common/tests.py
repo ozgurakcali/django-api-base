@@ -39,4 +39,4 @@ class BaseTests(TestCase):
             'password_confirm': password
         })
         self.assertEqual(response.status_code, 201)
-        return response.json()['body']['id'], username, password
+        return response.json()['id'], username, password

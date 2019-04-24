@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -57,6 +59,6 @@ class LogoutView(GenericAPIView):
         token = request.META.get('HTTP_AUTHORIZATION').split(' ')[1]
         JwtToken.objects.get(token=token).delete()
 
-        response = Response({})
-        response.messages = [get_message_object(Messages.TOKEN__LOGOUT_SUCCESS)]
-        return response
+        return Response({}, headers={
+            'Messages': json.dumps([get_message_object(Messages.TOKEN__LOGOUT_SUCCESS)])
+        })

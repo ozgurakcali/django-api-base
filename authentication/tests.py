@@ -1,3 +1,5 @@
+import json
+
 from authentication.constants import Messages
 from common.tests import BaseTests
 
@@ -48,7 +50,7 @@ class LoginTests(BaseTests):
 
         self.assertEqual(response.status_code, 401)
         self.assertIn(Messages.TOKEN__AUTHENTICATION_FAILED,
-                      [message['key'] for message in response.json()['messages']])
+                      [message['key'] for message in json.loads(response['Messages'])])
 
 
 class MeTests(BaseTests):
@@ -69,7 +71,7 @@ class MeTests(BaseTests):
 
         response = self.client.get('/me/', HTTP_AUTHORIZATION='Bearer ' + token)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['body']['username'], username)
+        self.assertEqual(response.json()['username'], username)
 
     def test_get_me_without_token(self):
         """

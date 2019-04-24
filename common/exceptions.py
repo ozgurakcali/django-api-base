@@ -1,3 +1,5 @@
+import json
+
 from common.constants import MessageTypes
 from rest_framework.exceptions import ErrorDetail, PermissionDenied
 from rest_framework.response import Response
@@ -83,28 +85,24 @@ def base_exception_handler(exc, context):
 
         process_error_list(exc.detail, messages)
 
-        response = Response({}, status.HTTP_400_BAD_REQUEST)
-        response.messages = messages
-
-        return response
+        return Response({}, status.HTTP_400_BAD_REQUEST, headers={
+            'Messages': json.dumps(messages)
+        })
 
     elif isinstance(exc, InvalidTokenException):
-        response = Response({}, status.HTTP_401_UNAUTHORIZED)
-        response.messages = [get_message_object(AuthenticationMessages.TOKEN__INVALID)]
-
-        return response
+        return Response({}, status.HTTP_401_UNAUTHORIZED, headers={
+            'Messages': json.dumps([get_message_object(AuthenticationMessages.TOKEN__INVALID)])
+        })
 
     elif isinstance(exc, LoginFailureException):
-        response = Response({}, status.HTTP_401_UNAUTHORIZED)
-        response.messages = [get_message_object(AuthenticationMessages.TOKEN__AUTHENTICATION_FAILED)]
-
-        return response
+        return Response({}, status.HTTP_401_UNAUTHORIZED, headers={
+            'Messages': json.dumps([get_message_object(AuthenticationMessages.TOKEN__AUTHENTICATION_FAILED)])
+        })
 
     elif isinstance(exc, PermissionDenied):
-        response = Response({}, status.HTTP_403_FORBIDDEN)
-        response.messages = [get_message_object(AuthenticationMessages.TOKEN__PERMISSION_DENIED)]
-
-        return response
+        return Response({}, status.HTTP_403_FORBIDDEN, headers={
+            'Messages': json.dumps([get_message_object(AuthenticationMessages.TOKEN__PERMISSION_DENIED)])
+        })
 
     # Call default DRF exception handler if not returned above
     return exception_handler(exc, context)
